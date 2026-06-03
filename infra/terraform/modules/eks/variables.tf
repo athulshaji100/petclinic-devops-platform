@@ -1,0 +1,20 @@
+variable "cluster_name" {
+  type = string
+}
+
+variable "eks_cluster_role_arn" {
+  type = string
+}
+
+variable "eks_node_role_arn" {
+  type = string
+}
+
+variable "private_subnet_ids" {
+  type = list(string)
+}
+
+
+variable "jenkins_role_arn" {
+  type = string
+}

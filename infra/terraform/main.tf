@@ -24,7 +24,7 @@ module "iam" {
 
   jenkins_role_name             = "petclinic-jenkins-role"
 
-  jenkins_instance_profile_name = "petclinic-jenkins-profile"
+  jenkins_instance_profile_name = "petclainic-jenkins-profile"
 
   eks_cluster_role_name         = "petclinic-eks-cluster-role"
 
@@ -53,3 +53,37 @@ module "ec2" {
 
   iam_instance_profile = module.iam.jenkins_instance_profile_name
 }
+
+
+
+
+# -----------------------------
+# ECR MODULE
+# -----------------------------
+
+module "ecr" {
+  source = "./modules/ecr"
+
+  petclinic_services = var.petclinic_services
+} 
+
+
+# -----------------------------
+# EKS MODULE
+# -----------------------------
+
+
+module "eks" {
+  source = "./modules/eks"
+
+  cluster_name         = var.cluster_name
+  eks_cluster_role_arn = module.iam.eks_cluster_role_arn
+  eks_node_role_arn    = module.iam.eks_node_role_arn
+  jenkins_role_arn     = module.iam.jenkins_role_arn
+
+  private_subnet_ids = [
+    module.vpc.private_subnet_a_id,
+    module.vpc.private_subnet_b_id
+  ]
+}
+

@@ -42,3 +42,30 @@ variable "key_name" {
 variable "security_group_id" {
   type = string
 }
+
+
+# ECR
+  
+  variable "petclinic_services" {
+  type        = list(string)
+  description = "List of Petclinic microservices"
+
+  default = [
+    "config-server",
+    "discovery-server",
+    "api-gateway",
+    "customers-service",
+    "visits-service",
+    "vets-service",
+    "admin-server"
+  ]
+}
+
+
+# EKS
+
+variable "cluster_name" {
+  type    = string
+  default = "petclinic-eks-cluster"
+}
+

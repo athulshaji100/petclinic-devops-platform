@@ -139,12 +139,14 @@ resource "aws_route_table_association" "private_assoc_b" {
   route_table_id = aws_route_table.private_rt.id
 }
 
+
 # SECURITY GROUP
 
 resource "aws_security_group" "main_sg" {
   name   = "petclinic-sg"
   vpc_id = aws_vpc.main.id
 
+  # SSH
   ingress {
     from_port   = 22
     to_port     = 22
@@ -152,6 +154,15 @@ resource "aws_security_group" "main_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # HTTP
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Jenkins
   ingress {
     from_port   = 8080
     to_port     = 8080
@@ -159,9 +170,18 @@ resource "aws_security_group" "main_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # SonarQube
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Grafana
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

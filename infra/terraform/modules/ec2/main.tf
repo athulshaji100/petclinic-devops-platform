@@ -9,7 +9,10 @@ resource "aws_instance" "main" {
 
   iam_instance_profile   = var.iam_instance_profile
 
+  user_data = file("${path.module}/user_data.sh")
+
+                                                                
   tags = {
     Name = "petclinic-ec2"
   }
-}
+}                                                                                    
