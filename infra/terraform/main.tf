@@ -11,8 +11,8 @@ module "vpc" {
 
   vpc_cidr = var.vpc_cidr
 
-  public_subnet_a_cidr  = var.public_subnet_a_cidr
-  public_subnet_b_cidr  = var.public_subnet_b_cidr
+  public_subnet_a_cidr = var.public_subnet_a_cidr
+  public_subnet_b_cidr = var.public_subnet_b_cidr
 
   private_subnet_a_cidr = var.private_subnet_a_cidr
   private_subnet_b_cidr = var.private_subnet_b_cidr
@@ -22,13 +22,13 @@ module "vpc" {
 module "iam" {
   source = "./modules/iam"
 
-  jenkins_role_name             = "petclinic-jenkins-role"
+  jenkins_role_name = "petclinic-jenkins-role"
 
   jenkins_instance_profile_name = "petclainic-jenkins-profile"
 
-  eks_cluster_role_name         = "petclinic-eks-cluster-role"
+  eks_cluster_role_name = "petclinic-eks-cluster-role"
 
-  eks_node_role_name            = "petclinic-eks-node-role"
+  eks_node_role_name = "petclinic-eks-node-role"
 }
 
 
@@ -65,7 +65,7 @@ module "ecr" {
   source = "./modules/ecr"
 
   petclinic_services = var.petclinic_services
-} 
+}
 
 
 # -----------------------------

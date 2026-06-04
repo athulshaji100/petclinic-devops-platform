@@ -45,8 +45,8 @@ variable "security_group_id" {
 
 
 # ECR
-  
-  variable "petclinic_services" {
+
+variable "petclinic_services" {
   type        = list(string)
   description = "List of Petclinic microservices"
 
@@ -57,7 +57,8 @@ variable "security_group_id" {
     "customers-service",
     "visits-service",
     "vets-service",
-    "admin-server"
+    "admin-server",
+    "genai-service"
   ]
 }
 

@@ -11,6 +11,12 @@ resource "aws_instance" "main" {
 
   user_data = file("${path.module}/user_data.sh")
 
+
+  root_block_device {
+    volume_size = 50
+    volume_type = "gp3"
+  }
+
                                                                 
   tags = {
     Name = "petclinic-ec2"

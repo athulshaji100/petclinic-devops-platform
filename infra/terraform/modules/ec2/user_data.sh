@@ -59,22 +59,43 @@ systemctl enable jenkins
 systemctl start jenkins
 
 
-
-
 # =========================
 # PostgreSQL for SonarQube
 # =========================
 
+apt update -y
 apt install -y postgresql postgresql-contrib unzip wget
 
 systemctl enable postgresql
 systemctl start postgresql
 
-# Create SonarQube DB and User
-sudo -u postgres psql <<EOF
-CREATE DATABASE sonarqube;
-CREATE USER sonar WITH ENCRYPTED PASSWORD 'sonar123';
+# Create SonarQube DB/User safely
+sudo -u postgres psql <<'EOF'
+DO
+$do$
+BEGIN
+   IF NOT EXISTS (
+      SELECT FROM pg_catalog.pg_roles WHERE rolname = 'sonar'
+   ) THEN
+      CREATE ROLE sonar LOGIN ENCRYPTED PASSWORD 'sonar123';
+   END IF;
+END
+$do$;
+EOF
+
+sudo -u postgres psql <<'EOF'
+SELECT 'CREATE DATABASE sonarqube OWNER sonar'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'sonarqube')\gexec
+EOF
+
+# Fix schema permissions
+sudo -u postgres psql -d sonarqube <<'EOF'
+ALTER DATABASE sonarqube OWNER TO sonar;
+ALTER SCHEMA public OWNER TO sonar;
+GRANT ALL ON SCHEMA public TO sonar;
 GRANT ALL PRIVILEGES ON DATABASE sonarqube TO sonar;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO sonar;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO sonar;
 EOF
 
 # =========================
@@ -83,14 +104,14 @@ EOF
 
 cd /opt
 
-wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.8.0.112029.zip
+if [ ! -d "/opt/sonarqube" ]; then
+  wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.8.0.112029.zip
+  unzip sonarqube-25.8.0.112029.zip
+  mv sonarqube-25.8.0.112029 sonarqube
+fi
 
-unzip sonarqube-25.8.0.112029.zip
-
-mv sonarqube-25.8.0.112029 sonarqube
-
-# Create Sonar User
-useradd -r -s /bin/bash sonar
+# Create Sonar Linux User safely
+id -u sonar &>/dev/null || useradd -r -s /bin/bash sonar
 
 chown -R sonar:sonar /opt/sonarqube
 
@@ -98,20 +119,18 @@ chown -R sonar:sonar /opt/sonarqube
 # SonarQube DB Config
 # =========================
 
-cat >> /opt/sonarqube/conf/sonar.properties <<EOF
-
+cat > /opt/sonarqube/conf/sonar.properties <<'EOF'
 sonar.jdbc.username=sonar
 sonar.jdbc.password=sonar123
 sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
-
 EOF
 
 # =========================
 # Linux Kernel Settings
 # =========================
 
-echo "vm.max_map_count=524288" >> /etc/sysctl.conf
-echo "fs.file-max=131072" >> /etc/sysctl.conf
+grep -q "vm.max_map_count=524288" /etc/sysctl.conf || echo "vm.max_map_count=524288" >> /etc/sysctl.conf
+grep -q "fs.file-max=131072" /etc/sysctl.conf || echo "fs.file-max=131072" >> /etc/sysctl.conf
 
 sysctl -p
 
@@ -119,10 +138,10 @@ sysctl -p
 # SonarQube Service
 # =========================
 
-cat > /etc/systemd/system/sonarqube.service <<EOF
+cat > /etc/systemd/system/sonarqube.service <<'EOF'
 [Unit]
 Description=SonarQube
-After=network.target
+After=network.target postgresql.service
 
 [Service]
 Type=forking
@@ -147,10 +166,23 @@ EOF
 # =========================
 
 systemctl daemon-reload
-
 systemctl enable sonarqube
+systemctl restart sonarqube
 
-systemctl start sonarqube
+# =========================
+# Check Status
+# =========================
+
+sleep 30
+
+systemctl status sonarqube --no-pager
+
+echo "======================================="
+echo "SonarQube : http://<EC2-PUBLIC-IP>:9000"
+echo "Username  : admin"
+echo "Password  : admin"
+echo "======================================="
+
 
 # =========================
 # Display URLs
@@ -161,5 +193,22 @@ echo "Jenkins  : http://<EC2-PUBLIC-IP>:8080"
 echo "SonarQube: http://<EC2-PUBLIC-IP>:9000"
 echo "======================================="    
 
+
+# =========================
+# Trivy-Installation
+# =========================
+
+sudo apt-get update
+sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | \
+gpg --dearmor | \
+sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+
+echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | \
+sudo tee /etc/apt/sources.list.d/trivy.list
+
+sudo apt-get update
+sudo apt-get install -y trivy
 
 
