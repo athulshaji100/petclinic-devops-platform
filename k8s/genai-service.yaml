@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: genai-service
+  labels:
+    app: genai-service-label
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: genai-service-label
+
+  template:
+    metadata:
+      labels:
+        app: genai-service-label
+
+    spec:
+      containers:
+        - name: genai-service
+          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-genai-service:1.0
+          ports:
+            - containerPort: 8084
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: genai-service-service
+
+spec:
+  selector:
+    app: genai-service-label
+
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
+
+  type: LoadBalancer

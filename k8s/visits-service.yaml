@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: visits-service
+  labels:
+    app: visits-service-label
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: visits-service-label
+
+  template:
+    metadata:
+      labels:
+        app: visits-service-label
+
+    spec:
+      containers:
+        - name: visits-service
+          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-visits-service:1.0
+          ports:
+            - containerPort: 8082
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: visits-service-service
+
+spec:
+  selector:
+    app: visits-service-label
+
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+
+  type: LoadBalancer

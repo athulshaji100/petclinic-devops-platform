@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: vets-service
+  labels:
+    app: vets-service-label
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: vets-service-label
+
+  template:
+    metadata:
+      labels:
+        app: vets-service-label
+
+    spec:
+      containers:
+        - name: vets-service
+          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-vets-service:1.0
+          ports:
+            - containerPort: 8083
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: vets-service-service
+
+spec:
+  selector:
+    app: vets-service-label
+
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+
+  type: LoadBalancer

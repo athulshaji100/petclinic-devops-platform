@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: admin-server
+  labels:
+    app: admin-server-label
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: admin-server-label
+
+  template:
+    metadata:
+      labels:
+        app: admin-server-label
+
+    spec:
+      containers:
+        - name: admin-server
+          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-admin-server:1.0
+          ports:
+            - containerPort: 9090
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: admin-server-service
+
+spec:
+  selector:
+    app: admin-server-label
+
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+
+  type: LoadBalancer
