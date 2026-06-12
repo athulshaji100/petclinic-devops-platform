@@ -23,8 +23,37 @@ spec:
       containers:
         - name: customers-service
           image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-customers-service:1.0
+
           ports:
             - containerPort: 8081
+
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db-secret
+                  key: host
+
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db-secret
+                  key: dbname
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db-secret
+                  key: username
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db-secret
+                  key: password
+
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://$(DB_HOST):3306/$(DB_NAME)"
 
 ---
 apiVersion: v1
@@ -42,4 +71,4 @@ spec:
       port: 8081
       targetPort: 8081
 
-  type: LoadBalancer
+  type: ClusterIP

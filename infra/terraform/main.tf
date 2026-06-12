@@ -2,6 +2,13 @@ provider "aws" {
   region = var.aws_region
 }
 
+// Added missing variable declaration for db_name
+variable "db_name" {
+  description = "Name of the database"
+  type        = string
+  default     = "petclinic"
+}
+
 # -----------------------------
 # VPC MODULE
 # -----------------------------
@@ -87,3 +94,78 @@ module "eks" {
   ]
 }
 
+
+# -----------------------------
+# KMS MODULE
+# -----------------------------
+
+
+module "kms" {
+  source = "./modules/kms"
+
+  environment  = "dev"
+  project_name = "petclinic"
+}
+
+
+# -----------------------------
+# RDS MODULE
+# -----------------------------
+
+
+module "rds" {
+  source = "./modules/rds"
+
+  vpc_id = module.vpc.vpc_id
+
+  private_subnet_ids = [
+    module.vpc.private_subnet_a_id,
+    module.vpc.private_subnet_b_id
+  ]
+
+  eks_node_security_group_id = module.eks.cluster_security_group_id
+
+  kms_key_arn = module.kms.kms_key_arn
+
+  db_username = var.db_username
+  db_password = var.db_password
+}
+
+
+# -----------------------------
+# RDS MODULE
+# -----------------------------
+
+
+
+module "secrets_manager" {
+  source = "./modules/sm"
+
+  kms_key_arn = module.kms.kms_key_arn
+
+  db_username  = var.db_username
+  db_password  = var.db_password
+  rds_endpoint = module.rds.rds_endpoint
+  rds_port     = module.rds.rds_port
+  db_name      = var.db_name
+}
+
+# -----------------------------
+# EXTERNAL SECRETS IRSA MODULE
+# -----------------------------
+
+
+
+module "external_secrets_irsa" {
+  source = "./modules/external-secrets-irsa"
+
+  cluster_name = module.eks.cluster_name
+  secret_arn   = module.secrets_manager.secret_arn
+  kms_key_arn  = module.kms.kms_key_arn
+
+  depends_on = [
+    module.eks,
+    module.secrets_manager,
+    module.kms
+  ]
+}

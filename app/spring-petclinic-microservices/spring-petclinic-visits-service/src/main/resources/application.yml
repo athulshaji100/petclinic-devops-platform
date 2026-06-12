@@ -1,9 +1,20 @@
 spring:
   application:
     name: visits-service
+
   config:
     import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
 
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: none
 
 ---
 spring:

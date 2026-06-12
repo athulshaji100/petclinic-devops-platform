@@ -39,10 +39,6 @@ variable "key_name" {
   type = string
 }
 
-variable "security_group_id" {
-  type = string
-}
-
 
 # ECR
 
@@ -69,4 +65,18 @@ variable "cluster_name" {
   type    = string
   default = "petclinic-eks-cluster"
 }
+
+
+# RDS
+
+variable "db_username" {
+  type      = string
+  sensitive = true
+}
+
+variable "db_password" {
+  type      = string
+  sensitive = true
+}
+
 

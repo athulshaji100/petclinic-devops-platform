@@ -80,3 +80,13 @@ output "eks_node_group_name" {
 output "jenkins_role_arn" {
   value = module.iam.jenkins_role_arn
 }
+
+# external_secrets_irsa
+
+output "external_secrets_role_arn" {
+  value = module.external_secrets_irsa.external_secrets_role_arn
+}
+
+
+
+

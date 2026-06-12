@@ -42,4 +42,4 @@ spec:
       port: 9090
       targetPort: 9090
 
-  type: LoadBalancer
+  type: clusterIP
