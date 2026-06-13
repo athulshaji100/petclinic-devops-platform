@@ -45,9 +45,16 @@ spring:
                 - CircuitBreaker=name=genaiCircuitBreaker,fallbackUri=/fallback
   reactor:
     context-propagation: auto
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server-service:8761/eureka/
+
+
 ---
 spring:
   config:
     activate:
       on-profile: docker
-    import: configserver:http://config-server:8888
+    import: configserver:http://config-server-service:8888
