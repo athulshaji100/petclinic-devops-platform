@@ -23,6 +23,7 @@ spec:
       containers:
         - name: visits-service
           image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-visits-service:1.0
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 8082
