@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: customers-service
-          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-customers-service:1.0
+          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-customers-service:latest
           imagePullPolicy: Always
 
           ports:

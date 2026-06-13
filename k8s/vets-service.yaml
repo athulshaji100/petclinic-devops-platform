@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: vets-service
-          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-vets-service:1.0
+          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-vets-service:latest
           imagePullPolicy: Always
 
           ports:

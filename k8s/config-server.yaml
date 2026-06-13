@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: config-server
-          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-config-server:1.0
+          image: 194680606620.dkr.ecr.ap-south-1.amazonaws.com/petclinic-config-server:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8888
