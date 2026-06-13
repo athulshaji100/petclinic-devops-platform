@@ -42,4 +42,4 @@ spec:
       port: 8084
       targetPort: 8084
 
-  type: clusterIP
+  type: ClusterIP
