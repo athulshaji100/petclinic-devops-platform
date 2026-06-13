@@ -30,6 +30,9 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker  
+
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://discovery-server-service:8761/eureka/ 
  
 
 ---
