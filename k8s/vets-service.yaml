@@ -29,6 +29,9 @@ spec:
             - containerPort: 8083
 
           env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
