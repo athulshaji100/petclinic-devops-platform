@@ -1,0 +1,55 @@
+namespace: default
+
+image:
+  registry: 194680606620.dkr.ecr.ap-south-1.amazonaws.com
+  tag: latest
+  pullPolicy: Always
+
+services:
+  admin-server:
+    image: petclinic-admin-server
+    port: 9090
+    replicas: 1
+    type: ClusterIP
+
+  config-server:
+    image: petclinic-config-server
+    port: 8888
+    replicas: 1
+    type: ClusterIP
+
+  discovery-server:
+    image: petclinic-discovery-server
+    port: 8761
+    replicas: 1
+    type: ClusterIP
+
+  api-gateway:
+    image: petclinic-api-gateway
+    port: 8080
+    replicas: 1
+    type: LoadBalancer
+
+  customers-service:
+    image: petclinic-customers-service
+    port: 8081
+    replicas: 1
+    type: ClusterIP
+
+  visits-service:
+    image: petclinic-visits-service
+    port: 8082
+    replicas: 1
+    type: ClusterIP
+
+  vets-service:
+    image: petclinic-vets-service
+    port: 8083
+    replicas: 1
+    type: ClusterIP
+
+  genai-service:
+    image: petclinic-genai-service
+    port: 8084
+    replicas: 1
+    type: ClusterIP
