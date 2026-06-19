@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: petclinic-db-import
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: mysql-import
+          image: mysql:8
+          env:
+            - name: MYSQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db-secret
+                  key: host
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db-secret
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: petclinic-db-secret
+                  key: password
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Creating databases..."
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "CREATE DATABASE IF NOT EXISTS customers;"
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "CREATE DATABASE IF NOT EXISTS vets;"
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "CREATE DATABASE IF NOT EXISTS visits;"
+
+              echo "Importing customers..."
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD customers < /customers/schema.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD customers < /customers/data.sql
+
+              echo "Importing vets..."
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD vets < /vets/schema.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD vets < /vets/data.sql
+
+              echo "Importing visits..."
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD visits < /visits/schema.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD visits < /visits/data.sql
+
+              echo "Database import completed"
+          volumeMounts:
+            - name: customers-db-sql
+              mountPath: /customers
+            - name: vets-db-sql
+              mountPath: /vets
+            - name: visits-db-sql
+              mountPath: /visits
+      volumes:
+        - name: customers-db-sql
+          configMap:
+            name: customers-db-sql
+        - name: vets-db-sql
+          configMap:
+            name: vets-db-sql
+        - name: visits-db-sql
+          configMap:
+            name: visits-db-sql
