@@ -25,5 +25,9 @@ spec:
               value: docker
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: http://discovery-server-service:8761/eureka/
+          envFrom:
+            - secretRef:
+                name: petclinic-db-secret
+                optional: true
 ---
 {{- end }}
