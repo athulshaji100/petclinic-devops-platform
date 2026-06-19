@@ -6,25 +6,25 @@ image:
   pullPolicy: Always
 
 services:
-  admin-server:
+  admin-server-service:
     image: petclinic-admin-server
     port: 9090
     replicas: 1
     type: ClusterIP
 
-  config-server:
+  config-server-service:
     image: petclinic-config-server
     port: 8888
     replicas: 1
     type: ClusterIP
 
-  discovery-server:
+  discovery-server-service:
     image: petclinic-discovery-server
     port: 8761
     replicas: 1
     type: ClusterIP
 
-  api-gateway:
+  api-gateway-service:
     image: petclinic-api-gateway
     port: 8080
     replicas: 1
