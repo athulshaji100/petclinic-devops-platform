@@ -1,3 +1,5 @@
+USE petclinic;
+
 INSERT IGNORE INTO types VALUES (1, 'cat');
 INSERT IGNORE INTO types VALUES (2, 'dog');
 INSERT IGNORE INTO types VALUES (3, 'lizard');
