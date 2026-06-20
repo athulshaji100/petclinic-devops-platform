@@ -5,6 +5,9 @@ image:
   tag: latest
   pullPolicy: Always
 
+database:
+  host: YOUR-RDS-ENDPOINT-HERE
+
 services:
   admin-server-service:
     image: petclinic-admin-server
@@ -35,18 +38,21 @@ services:
     port: 8081
     replicas: 1
     type: ClusterIP
+    database: customers
 
   visits-service:
     image: petclinic-visits-service
     port: 8082
     replicas: 1
     type: ClusterIP
+    database: visits
 
   vets-service:
     image: petclinic-vets-service
     port: 8083
     replicas: 1
     type: ClusterIP
+    database: vets
 
   genai-service:
     image: petclinic-genai-service
