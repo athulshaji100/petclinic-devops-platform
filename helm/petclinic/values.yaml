@@ -38,24 +38,25 @@ services:
     port: 8081
     replicas: 1
     type: ClusterIP
-    database: customers
+    database: petclinic
 
   visits-service:
     image: petclinic-visits-service
     port: 8082
     replicas: 1
     type: ClusterIP
-    database: visits
+    database: petclinic
 
   vets-service:
     image: petclinic-vets-service
     port: 8083
     replicas: 1
     type: ClusterIP
-    database: vets
+    database: petclinic
 
   genai-service:
     image: petclinic-genai-service
     port: 8084
     replicas: 1
     type: ClusterIP
+    
