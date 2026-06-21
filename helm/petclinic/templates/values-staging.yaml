@@ -1,4 +1,4 @@
-namespace: default
+namespace: staging
 
 image:
   registry: 194680606620.dkr.ecr.ap-south-1.amazonaws.com
@@ -6,7 +6,7 @@ image:
   pullPolicy: Always
 
 database:
-  host: petclinic-mysql.c5ysw8q20zq1.ap-south-1.rds.amazonaws.com
+  host: petclinic-mysql-dev.c5ysw8q20zq1.ap-south-1.rds.amazonaws.com
 
 services:
   admin-server-service:
