@@ -29,22 +29,16 @@ spec:
             - /bin/sh
             - -c
             - |
-              echo "Creating databases..."
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "CREATE DATABASE IF NOT EXISTS customers;"
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "CREATE DATABASE IF NOT EXISTS vets;"
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "CREATE DATABASE IF NOT EXISTS visits;"
+              echo "Importing Petclinic database..."
 
-              echo "Importing customers..."
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD customers < /customers/schema.sql
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD customers < /customers/data.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD < /customers/schema.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD < /customers/data.sql
 
-              echo "Importing vets..."
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD vets < /vets/schema.sql
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD vets < /vets/data.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD < /vets/schema.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD < /vets/data.sql
 
-              echo "Importing visits..."
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD visits < /visits/schema.sql
-              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD visits < /visits/data.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD < /visits/schema.sql
+              mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD < /visits/data.sql
 
               echo "Database import completed"
           volumeMounts:
